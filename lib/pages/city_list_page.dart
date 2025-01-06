@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:styled_widget/styled_widget.dart';
 import 'city_info_page.dart';
 import 'add_city_page.dart';
 import '../services/weather_service.dart';
@@ -45,7 +46,7 @@ class _CityListPageState extends State<CityListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('City List'),
+        title: Text('Cities'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -99,30 +100,18 @@ class _CityListPageState extends State<CityListPage> {
                                   ),
                                 );
                               },
-                            );
+                            ).padding(all: 8).decorated(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ).padding(vertical: 4);
                           }
                         },
                       );
                     },
                   ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                final cityName = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddCityPage()),
-                );
-                if (cityName != null) {
-                  _addCity(cityName);
-                }
-              },
-              child: Text('Add City'),
-            ),
-          ),
         ],
-      ),
+      ).padding(all: 16).backgroundColor(Colors.white),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:styled_widget/styled_widget.dart';
 import '../services/weather_service.dart';
+import 'package:intl/intl.dart';
 
 class CityInfoPage extends StatefulWidget {
   final String cityName;
@@ -58,6 +60,11 @@ class _CityInfoPageState extends State<CityInfoPage> {
     }
   }
 
+  String _formatTime(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return DateFormat('hh:mm a').format(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,26 +81,52 @@ class _CityInfoPageState extends State<CityInfoPage> {
                     children: [
                       Text(
                         'Weather in ${widget.cityName}',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      SizedBox(height: 20),
+                        style: TextStyle(fontSize: 20),
+                      ).padding(bottom: 8),
                       Text(
                         '${_weatherData!['main']['temp']}°C',
-                        style: TextStyle(fontSize: 48),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        _weatherData!['weather'][0]['description'],
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      SizedBox(height: 20),
+                        style: TextStyle(fontSize: 40),
+                      ).padding(bottom: 8),
                       Icon(
                         _getWeatherIcon(_weatherData!['weather'][0]['id']),
-                        size: 48,
+                        size: 40,
                       ),
+                      GridView.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          childAspectRatio: 2,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            _buildInfoTile('Feels like', '${_weatherData!['main']['feels_like']}°C'),
+                            _buildInfoTile('Description', _weatherData!['weather'][0]['description']),
+                            _buildInfoTile('Humidity', '${_weatherData!['main']['humidity']}%'),
+                            _buildInfoTile('Wind speed', '${_weatherData!['wind']['speed']} m/s'),
+                            _buildInfoTile('Pressure', '${_weatherData!['main']['pressure']} hPa'),
+                            _buildInfoTile('Visibility', '${_weatherData!['visibility']} m'),
+                            _buildInfoTile('Sunrise', _formatTime(_weatherData!['sys']['sunrise'])),
+                            _buildInfoTile('Sunset', _formatTime(_weatherData!['sys']['sunset'])),
+                          ],
+                        ),
                     ],
-                  ),
+                  )
       ),
+    );
+  }
+
+  Widget _buildInfoTile(String title, String value) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          value,
+          style: TextStyle(fontSize: 12),
+        ),
+      ]
     );
   }
 }

@@ -15,10 +15,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weather App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 59, 61, 190)),
         useMaterial3: true,
       ),
       home: const CityListPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
