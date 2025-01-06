@@ -1,16 +1,24 @@
 # weather_app
 
-A new Flutter project.
+A Weather App Project with Flutter for Neosilver 
 
-## Getting Started
+## How to use
 
-This project is a starting point for a Flutter application.
+To run this project, you'll need to have Flutter installed on your machine. You can download it from the official website: https://flutter.dev/docs/get-started/install.
 
-A few resources to get you started if this is your first Flutter project:
+After installing Flutter, clone this repository and navigate to the project directory:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Add an assets/.env file to your project containing the following:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+API_KEY = "your-open-weather-api-key";
+```
+
+Replace "your-open-weather-api-key" with your actual OpenWeatherMap API key.
+
+Now, run the following commands in your terminal:
+
+```
+1. flutter pub get
+2. flutter run
+```
