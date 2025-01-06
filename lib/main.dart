@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'pages/city_info_page.dart';
+import 'pages/city_list_page.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const CityInfoPage(cityName: "Paris"),
+      home: const CityListPage(),
     );
   }
 }

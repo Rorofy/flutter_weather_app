@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weather/weather.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:weather_icons/weather_icons.dart';
+import '../services/weather_service.dart';
 
 class CityInfoPage extends StatefulWidget {
   final String cityName;
@@ -12,23 +12,22 @@ class CityInfoPage extends StatefulWidget {
 }
 
 class _CityInfoPageState extends State<CityInfoPage> {
-  late WeatherFactory wf;
-  Weather? _weather;
+  final WeatherService _weatherService = WeatherService();
+  Map<String, dynamic>? _weatherData;
   bool _isLoading = true;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    wf = WeatherFactory(dotenv.env['API_KEY']!);
     _fetchWeather();
   }
 
   Future<void> _fetchWeather() async {
     try {
-      Weather weather = await wf.currentWeatherByCityName(widget.cityName);
+      final weatherData = await _weatherService.getWeather(widget.cityName);
       setState(() {
-        _weather = weather;
+        _weatherData = weatherData;
         _isLoading = false;
       });
     } catch (e) {
@@ -36,6 +35,26 @@ class _CityInfoPageState extends State<CityInfoPage> {
         _errorMessage = 'Failed to load weather data: $e';
         _isLoading = false;
       });
+    }
+  }
+
+  IconData _getWeatherIcon(int condition) {
+    if (condition < 300) {
+      return WeatherIcons.thunderstorm;
+    } else if (condition < 400) {
+      return WeatherIcons.showers;
+    } else if (condition < 600) {
+      return WeatherIcons.rain;
+    } else if (condition < 700) {
+      return WeatherIcons.snow;
+    } else if (condition < 800) {
+      return WeatherIcons.fog;
+    } else if (condition == 800) {
+      return WeatherIcons.day_sunny;
+    } else if (condition <= 804) {
+      return WeatherIcons.cloudy;
+    } else {
+      return WeatherIcons.na;
     }
   }
 
@@ -59,17 +78,17 @@ class _CityInfoPageState extends State<CityInfoPage> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        '${_weather!.temperature?.celsius?.toStringAsFixed(1)}°C',
+                        '${_weatherData!['main']['temp']}°C',
                         style: TextStyle(fontSize: 48),
                       ),
                       SizedBox(height: 20),
                       Text(
-                        _weather!.weatherDescription ?? '',
+                        _weatherData!['weather'][0]['description'],
                         style: TextStyle(fontSize: 24),
                       ),
                       SizedBox(height: 20),
                       Icon(
-                        Icons.wb_sunny, // You can use different icons based on weather condition
+                        _getWeatherIcon(_weatherData!['weather'][0]['id']),
                         size: 48,
                       ),
                     ],
