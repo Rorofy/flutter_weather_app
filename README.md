@@ -1,6 +1,6 @@
 # weather_app
 
-A Weather App Project with Flutter for Neosilver 
+A Weather App Project with Flutter for Neosilver's technical test
 
 ## How to use
 
