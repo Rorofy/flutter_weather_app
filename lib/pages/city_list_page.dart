@@ -173,7 +173,8 @@ class _CityListPageState extends State<CityListPage> {
                                 return ListTile(
                                   title: Text(cityName),
                                   subtitle: Text(
-                                    '${weatherData['main']['temp']}°C${cityName == _currentLocationCity ? ' (Current Location)' : ''}',
+                                    '${weatherData['main']['temp']}°C' +
+                                    (cityName == _currentLocationCity ? ' (Current Location)' : ''),
                                   ),
                                   trailing: Icon(_getWeatherIcon(weatherData['weather'][0]['id'])),
                                   onTap: () {
