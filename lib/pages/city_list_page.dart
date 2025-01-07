@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:styled_widget/styled_widget.dart';
 import 'city_info_page.dart';
 import 'add_city_page.dart';
@@ -17,11 +18,28 @@ class _CityListPageState extends State<CityListPage> {
   final List<String> _cities = [];
   final WeatherService _weatherService = WeatherService();
   bool _isLoadingLocation = true;
+  String? _currentLocationCity;
 
   @override
   void initState() {
     super.initState();
+    _loadCities();
     _addCurrentLocationCity();
+  }
+
+  Future<void> _loadCities() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? cities = prefs.getStringList('cities');
+    if (cities != null) {
+      setState(() {
+        _cities.addAll(cities);
+      });
+    }
+  }
+
+  Future<void> _saveCities() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('cities', _cities);
   }
 
   Future<void> _addCurrentLocationCity() async {
@@ -29,15 +47,23 @@ class _CityListPageState extends State<CityListPage> {
       Position position = await _determinePosition();
       final weatherData = await _weatherService.getWeatherByCoordinates(position.latitude, position.longitude);
       final cityName = weatherData['name'];
-      setState(() {
-        _cities.add(cityName);
-        _isLoadingLocation = false;
-      });
+      if (!_cities.contains(cityName)) {
+        setState(() {
+          _cities.add(cityName);
+          _currentLocationCity = cityName;
+          _isLoadingLocation = false;
+        });
+        _saveCities();
+      } else {
+        setState(() {
+          _currentLocationCity = cityName;
+          _isLoadingLocation = false;
+        });
+      }
     } catch (e) {
       setState(() {
         _isLoadingLocation = false;
       });
-      print('Failed to get current location: $e');
     }
   }
 
@@ -66,9 +92,12 @@ class _CityListPageState extends State<CityListPage> {
   }
 
   void _addCity(String cityName) {
-    setState(() {
-      _cities.add(cityName);
-    });
+    if (!_cities.contains(cityName)) {
+      setState(() {
+        _cities.add(cityName);
+      });
+      _saveCities();
+    }
   }
 
   IconData _getWeatherIcon(int condition) {
@@ -143,7 +172,9 @@ class _CityListPageState extends State<CityListPage> {
                                 final weatherData = snapshot.data as Map<String, dynamic>;
                                 return ListTile(
                                   title: Text(cityName),
-                                  subtitle: Text('${weatherData['main']['temp']}°C'),
+                                  subtitle: Text(
+                                    '${weatherData['main']['temp']}°C${cityName == _currentLocationCity ? ' (Current Location)' : ''}',
+                                  ),
                                   trailing: Icon(_getWeatherIcon(weatherData['weather'][0]['id'])),
                                   onTap: () {
                                     Navigator.push(
