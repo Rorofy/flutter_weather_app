@@ -76,40 +76,46 @@ class _CityInfoPageState extends State<CityInfoPage> {
             ? CircularProgressIndicator()
             : _errorMessage != null
                 ? Text(_errorMessage!)
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Weather in ${widget.cityName}',
-                        style: TextStyle(fontSize: 20),
-                      ).padding(bottom: 8),
-                      Text(
-                        '${_weatherData!['main']['temp']}°C',
-                        style: TextStyle(fontSize: 40),
-                      ).padding(bottom: 8),
-                      Icon(
-                        _getWeatherIcon(_weatherData!['weather'][0]['id']),
-                        size: 40,
-                      ),
-                      GridView.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 0,
-                          childAspectRatio: 2,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            _buildInfoTile('Feels like', '${_weatherData!['main']['feels_like']}°C'),
-                            _buildInfoTile('Description', _weatherData!['weather'][0]['description']),
-                            _buildInfoTile('Humidity', '${_weatherData!['main']['humidity']}%'),
-                            _buildInfoTile('Wind speed', '${_weatherData!['wind']['speed']} m/s'),
-                            _buildInfoTile('Pressure', '${_weatherData!['main']['pressure']} hPa'),
-                            _buildInfoTile('Visibility', '${_weatherData!['visibility']} m'),
-                            _buildInfoTile('Sunrise', _formatTime(_weatherData!['sys']['sunrise'])),
-                            _buildInfoTile('Sunset', _formatTime(_weatherData!['sys']['sunset'])),
-                          ],
+                : SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Weather in ${widget.cityName}',
+                          style: TextStyle(fontSize: 20),
+                        ).padding(bottom: 8),
+                        Text(
+                          '${_weatherData!['main']['temp']}°C',
+                          style: TextStyle(fontSize: 40),
+                        ).padding(bottom: 8),
+                        Icon(
+                          _getWeatherIcon(_weatherData!['weather'][0]['id']),
+                          size: 40,
+                        ).padding(bottom: 8),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: GridView.count(
+                            crossAxisCount: 2,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: 0.0,
+                            crossAxisSpacing: 0.0,
+                            childAspectRatio: 2,
+                            children: [
+                              _buildInfoTile('Feels like', '${_weatherData!['main']['feels_like']}°C'),
+                              _buildInfoTile('Humidity', '${_weatherData!['main']['humidity']}%'),
+                              _buildInfoTile('Wind speed', '${_weatherData!['wind']['speed']} m/s'),
+                              _buildInfoTile('Pressure', '${_weatherData!['main']['pressure']} hPa'),
+                              _buildInfoTile('Visibility', '${_weatherData!['visibility']} m'),
+                              _buildInfoTile('Sunrise', _formatTime(_weatherData!['sys']['sunrise'])),
+                              _buildInfoTile('Sunset', _formatTime(_weatherData!['sys']['sunset'])),
+                              _buildInfoTile('Description', _weatherData!['weather'][0]['description']),
+                            ],
+                          ),
                         ),
-                    ],
-                  )
+                      ],
+                    ).padding(all: 8),
+                  ),
       ),
     );
   }
@@ -121,12 +127,12 @@ class _CityInfoPageState extends State<CityInfoPage> {
         Text(
           title,
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
+        ).padding(bottom: 2),
         Text(
           value,
           style: TextStyle(fontSize: 12),
         ),
-      ]
-    );
+      ],
+    ).padding(all: 2);
   }
 }

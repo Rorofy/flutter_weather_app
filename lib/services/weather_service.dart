@@ -15,4 +15,15 @@ class WeatherService {
       throw Exception('Failed to load weather data');
     }
   }
+
+  Future<Map<String, dynamic>> getWeatherByCoordinates(double latitude, double longitude) async {
+    final response = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$_apiKey&units=metric'));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load weather data');
+    }
+  }
 }
